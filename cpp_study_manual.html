@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C++ Study Manual — Dept. of Computer Science, St. Joseph's College</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --azure-deep:#023e73;
+    --azure:#0077b6;
+    --azure-mid:#0096c7;
+    --azure-light:#caf0f8;
+    --azure-pale:#f2fbfe;
+    --tangerine:#ff7f11;
+    --tangerine-deep:#d9660a;
+    --tangerine-light:#ffe3c2;
+    --ink:#122238;
+    --ink-soft:#3d5570;
+    --white:#ffffff;
+    --line:#d9ecf2;
+    --good:#2a9d5c;
+    --bad:#d64550;
+    --radius:14px;
+    --sidebar-w:308px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Source Sans 3', sans-serif;
+    background:var(--azure-pale);
+    color:var(--ink);
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:34px 34px;
+    background-position:-1px -1px;
+  }
+  h1,h2,h3,h4{font-family:'Space Grotesk', sans-serif; margin:0; color:var(--azure-deep);}
+  code, pre, .mono{font-family:'JetBrains Mono', monospace;}
+  a{color:var(--azure);}
+  ::selection{background:var(--tangerine-light);}
+
+  /* ---------- Top masthead ---------- */
+  .masthead{
+    background:linear-gradient(120deg, var(--azure-deep) 0%, var(--azure) 62%, var(--azure-mid) 100%);
+    color:#fff;
+    padding:22px clamp(16px,4vw,48px);
+    position:relative;
+    overflow:hidden;
+    border-bottom:5px solid var(--tangerine);
+  }
+  .masthead::after{
+    content:"";
+    position:absolute; right:-60px; top:-60px; width:260px; height:260px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(255,127,17,.35), transparent 70%);
+  }
+  .masthead-top{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; position:relative; z-index:1;}
+  .dept-block .eyebrow{font-size:12.5px; letter-spacing:.02em; opacity:.85; margin-bottom:2px;}
+  .dept-block .college{font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15px;}
+  .venture-badge{
+    background:var(--tangerine);
+    color:var(--azure-deep);
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    padding:6px 12px;
+    border-radius:999px;
+    white-space:nowrap;
+    box-shadow:0 2px 0 rgba(0,0,0,.12);
+  }
+  .manual-title{
+    font-size:clamp(28px, 4vw, 44px);
+    line-height:1.05;
+    margin-top:18px;
+    color:#fff;
+    position:relative; z-index:1;
+  }
+  .manual-title span{color:var(--tangerine); }
+  .manual-sub{margin-top:8px; color:var(--azure-light); font-size:15px; max-width:640px; position:relative; z-index:1;}
+
+  .progress-wrap{
+    margin-top:20px;
+    display:flex; align-items:center; gap:14px;
+    position:relative; z-index:1;
+    max-width:420px;
+  }
+  .progress-track{flex:1; height:10px; background:rgba(255,255,255,.25); border-radius:999px; overflow:hidden;}
+  .progress-fill{height:100%; width:0%; background:var(--tangerine); border-radius:999px; transition:width .4s ease;}
+  .progress-label{font-family:'JetBrains Mono',monospace; font-size:13px; white-space:nowrap;}
+
+  /* ---------- Layout ---------- */
+  .layout{display:flex; align-items:flex-start; max-width:1360px; margin:0 auto;}
+  .sidebar{
+    width:var(--sidebar-w);
+    flex-shrink:0;
+    position:sticky; top:0;
+    height:100vh;
+    overflow-y:auto;
+    background:#fff;
+    border-right:2px solid var(--azure-light);
+    padding:18px 16px 40px;
+  }
+  .sidebar::-webkit-scrollbar{width:8px;}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--azure-light); border-radius:8px;}
+
+  .search-box{position:relative; margin-bottom:16px;}
+  .search-box input{
+    width:100%; padding:10px 12px 10px 34px;
+    border:2px solid var(--azure-light);
+    border-radius:10px;
+    font-family:'Source Sans 3',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+    outline:none;
+    transition:border-color .15s ease;
+  }
+  .search-box input:focus{border-color:var(--tangerine);}
+  .search-box svg{position:absolute; left:10px; top:50%; transform:translateY(-50%); width:15px; height:15px; stroke:var(--azure);}
+
+  .unit-tabs{display:flex; gap:8px; margin-bottom:14px;}
+  .unit-tab{
+    flex:1; text-align:center; padding:8px 6px;
+    border-radius:10px; border:2px solid var(--azure-light);
+    font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:13px;
+    cursor:pointer; color:var(--azure-deep); background:var(--azure-pale);
+    transition:.15s ease;
+  }
+  .unit-tab.active{background:var(--azure); color:#fff; border-color:var(--azure);}
+  .unit-tab:hover{border-color:var(--tangerine);}
+
+  .nav-group-title{
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:12.5px;
+    text-transform:uppercase; letter-spacing:.06em; color:var(--tangerine-deep);
+    margin:18px 0 8px; padding-left:2px;
+  }
+  .nav-list{list-style:none; margin:0; padding:0;}
+  .nav-item{
+    display:flex; align-items:center; gap:9px;
+    padding:8px 9px; border-radius:9px; cursor:pointer;
+    font-size:13.6px; color:var(--ink-soft);
+    margin-bottom:2px;
+    transition:background .12s ease, color .12s ease;
+  }
+  .nav-item:hover{background:var(--azure-pale); color:var(--azure-deep);}
+  .nav-item.current{background:var(--azure-light); color:var(--azure-deep); font-weight:600;}
+  .nav-num{
+    flex-shrink:0; width:26px; height:26px; border-radius:7px;
+    background:var(--azure-light); color:var(--azure-deep);
+    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .nav-item.done .nav-num{background:var(--good); color:#fff;}
+  .nav-item.hidden{display:none;}
+
+  /* ---------- Main content ---------- */
+  main{flex:1; min-width:0; padding:32px clamp(16px,4vw,48px) 100px;}
+  .unit-banner{
+    background:var(--white);
+    border:2px solid var(--azure-light);
+    border-left:6px solid var(--tangerine);
+    border-radius:var(--radius);
+    padding:18px 22px;
+    margin-bottom:28px;
+    display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;
+  }
+  .unit-banner h2{font-size:22px;}
+  .unit-banner p{margin:4px 0 0; color:var(--ink-soft); font-size:14px;}
+  .unit-banner .tag{
+    font-family:'JetBrains Mono',monospace; font-size:12px; background:var(--tangerine-light);
+    color:var(--tangerine-deep); padding:5px 10px; border-radius:999px; font-weight:600;
+  }
+
+  .topic-card{
+    background:var(--white);
+    border:2px solid var(--azure-light);
+    border-radius:var(--radius);
+    padding:24px clamp(16px,3vw,30px);
+    margin-bottom:22px;
+    scroll-margin-top:20px;
+    transition:box-shadow .2s ease, border-color .2s ease, opacity .2s ease, transform .2s ease;
+  }
+  .topic-card.hidden{display:none;}
+  .topic-card:target, .topic-card.spotlight{border-color:var(--tangerine); box-shadow:0 8px 24px rgba(255,127,17,.15);}
+
+  .topic-head{display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:6px;}
+  .topic-head-left{display:flex; align-items:center; gap:12px;}
+  .topic-badge{
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px;
+    background:var(--azure-deep); color:#fff; padding:5px 10px; border-radius:8px;
+  }
+  .topic-head h3{font-size:21px;}
+
+  .mark-btn{
+    display:flex; align-items:center; gap:7px;
+    border:2px solid var(--azure-light); background:var(--azure-pale);
+    color:var(--azure-deep); font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12.5px;
+    padding:7px 12px; border-radius:999px; cursor:pointer; transition:.15s ease; flex-shrink:0;
+  }
+  .mark-btn:hover{border-color:var(--tangerine);}
+  .mark-btn.done{background:var(--good); border-color:var(--good); color:#fff;}
+  .mark-btn .dot{width:8px; height:8px; border-radius:50%; background:var(--ink-soft);}
+  .mark-btn.done .dot{background:#fff;}
+
+  .topic-card p{line-height:1.62; color:var(--ink); font-size:15px;}
+  .topic-card ul{line-height:1.6; color:var(--ink); font-size:14.5px; padding-left:20px;}
+
+  .section-label{
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:12.5px;
+    text-transform:uppercase; letter-spacing:.05em; color:var(--azure);
+    margin:18px 0 8px;
+  }
+
+  .syntax-box{
+    background:var(--azure-pale);
+    border:1.5px dashed var(--azure-mid);
+    border-radius:10px;
+    padding:12px 16px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:13.6px;
+    color:var(--azure-deep);
+    overflow-x:auto;
+    white-space:pre;
+  }
+
+  .code-block{position:relative; margin-top:10px;}
+  .code-block pre{
+    background:#fbfdff;
+    border:1.5px solid var(--azure-light);
+    border-radius:10px;
+    padding:16px 18px;
+    overflow-x:auto;
+    font-size:13.4px;
+    line-height:1.62;
+    margin:0;
+  }
+  .copy-btn{
+    position:absolute; top:9px; right:9px;
+    background:var(--white); border:1.5px solid var(--azure-light);
+    color:var(--azure-deep); font-family:'Space Grotesk',sans-serif; font-size:11.5px; font-weight:600;
+    padding:5px 10px; border-radius:7px; cursor:pointer;
+  }
+  .copy-btn:hover{border-color:var(--tangerine); color:var(--tangerine-deep);}
+
+  /* token colors — light theme */
+  .tok-kw{color:var(--azure); font-weight:600;}
+  .tok-str{color:#b5590a;}
+  .tok-com{color:#7a8a99; font-style:italic;}
+  .tok-num{color:#1f8a5f;}
+  .tok-pp{color:var(--tangerine-deep); font-weight:600;}
+
+  .callout{
+    border-radius:10px; padding:13px 16px; margin-top:14px; font-size:14px; line-height:1.55;
+    display:flex; gap:10px; align-items:flex-start;
+  }
+  .callout.pitfall{background:#fff2ea; border:1.5px solid #ffcda3;}
+  .callout.pitfall .cicon{color:var(--tangerine-deep);}
+  .callout.points{background:var(--azure-light); border:1.5px solid #a9dfef;}
+  .cicon{font-family:'Space Grotesk',sans-serif; font-weight:700; flex-shrink:0;}
+
+  .quiz-box{
+    margin-top:18px; background:linear-gradient(180deg,#fff,var(--azure-pale));
+    border:2px solid var(--azure-light); border-radius:12px; padding:16px 18px;
+  }
+  .quiz-box .qtitle{font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--tangerine-deep); font-size:13px; text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px;}
+  .quiz-box .qtext{font-weight:600; margin-bottom:10px; font-size:14.5px; color:var(--ink);}
+  .quiz-opts{display:grid; gap:8px;}
+  .quiz-opt{
+    text-align:left; padding:9px 12px; border-radius:8px; border:2px solid var(--azure-light);
+    background:#fff; cursor:pointer; font-size:14px; font-family:'Source Sans 3',sans-serif; color:var(--ink);
+    transition:.12s ease;
+  }
+  .quiz-opt:hover{border-color:var(--azure-mid);}
+  .quiz-opt.correct{background:#e7f7ee; border-color:var(--good); color:#1c6b3d; font-weight:600;}
+  .quiz-opt.wrong{background:#fdecec; border-color:var(--bad); color:#a4303a; font-weight:600;}
+  .quiz-opt[disabled]{cursor:default;}
+  .quiz-explain{margin-top:10px; font-size:13.6px; color:var(--ink-soft); background:#fff; border-radius:8px; padding:10px 12px; border:1.5px solid var(--azure-light); display:none;}
+  .quiz-explain.show{display:block;}
+
+  footer{
+    text-align:center; padding:30px 16px 50px; color:var(--ink-soft); font-size:13px;
+  }
+  footer .venture{font-family:'Space Grotesk',sans-serif; font-weight:700; color:var(--tangerine-deep);}
+
+  .sidebar-toggle{display:none;}
+  .no-results{display:none; color:var(--ink-soft); font-size:13px; padding:10px 4px;}
+
+  @media (max-width: 900px){
+    .layout{flex-direction:column;}
+    .sidebar{
+      position:fixed; z-index:40; left:0; top:0; height:100vh;
+      transform:translateX(-104%); transition:transform .25s ease;
+      box-shadow:10px 0 30px rgba(0,0,0,.15);
+    }
+    .sidebar.open{transform:translateX(0);}
+    .sidebar-toggle{
+      display:flex; align-items:center; gap:8px;
+      position:fixed; bottom:20px; left:20px; z-index:41;
+      background:var(--tangerine); color:#fff; border:none;
+      font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px;
+      padding:12px 16px; border-radius:999px; cursor:pointer; box-shadow:0 6px 16px rgba(0,0,0,.25);
+    }
+    main{padding:26px 16px 100px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-top">
+    <div class="dept-block">
+      <div class="eyebrow">DEPARTMENT OF COMPUTER SCIENCE</div>
+      <div class="college">St. Joseph's College (Autonomous), Tiruchirappalli</div>
+    </div>
+    <div class="venture-badge">A Venture by g2r2</div>
+  </div>
+  <h1 class="manual-title">C++ Study Manual <span>// interactive edition</span></h1>
+  <p class="manual-sub">A hands-on companion for Unit I (C++ Foundations) and Unit IV (Fundamental Data Structures) — read the idea, see the syntax, run the code in your head, then test yourself.</p>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0 / 17 topics mastered</div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="searchInput" placeholder="Find a topic… e.g. pointers, stack">
+    </div>
+    <div class="unit-tabs">
+      <div class="unit-tab active" data-unit="1" id="tabUnit1">Unit I</div>
+      <div class="unit-tab" data-unit="4" id="tabUnit4">Unit IV</div>
+    </div>
+    <div id="navContainer"></div>
+    <div class="no-results" id="noResults">No topics match your search.</div>
+  </aside>
+
+  <main>
+    <section class="unit-banner" id="banner1">
+      <div>
+        <h2>Unit I — Writing C++, Memory, Arrays &amp; Pointers</h2>
+        <p>Syntax, tokens, operators, control flow, type conversion, memory model, arrays and pointers.</p>
+      </div>
+      <div class="tag">8 topics</div>
+    </section>
+    <div id="unit1Content"></div>
+
+    <section class="unit-banner" id="banner4" style="margin-top:10px;">
+      <div>
+        <h2>Unit IV — Fundamental Data Structures</h2>
+        <p>Arrays &amp; matrices, stacks, queues, linked lists, rooted trees, traversal and real applications.</p>
+      </div>
+      <div class="tag">9 topics</div>
+    </section>
+    <div id="unit4Content"></div>
+  </main>
+</div>
+
+<button class="sidebar-toggle" id="sidebarToggle">☰ Topics</button>
+
+<footer>
+  Department of Computer Science · St. Joseph's College (Autonomous), Tiruchirappalli &nbsp;•&nbsp; <span class="venture">A Venture by g2r2</span>
+</footer>
+
+<script>
+/* ============================= DATA ============================= */
+const TOPICS = [
+// ---------------- UNIT I ----------------
+{
+  unit:1, num:"1.1", id:"whitespace", title:"Writing C++ Code, Whitespace &amp; Formatting",
+  explain:`<p>A C++ compiler cares about <strong>tokens</strong>, not about how far apart they sit. Spaces, tabs and blank lines between tokens are ignored — they exist for the humans reading the code, not for the compiler. What the compiler <em>does</em> require is a semicolon <code>;</code> at the end of every statement, and matching curly braces <code>{ }</code> to mark the start and end of a block.</p>
+  <p>Because whitespace is free, good formatting is a discipline you choose, not a rule the language enforces. Consistent indentation (commonly 2 or 4 spaces), one statement per line, and a clear brace style make code far easier to read, debug and hand over to someone else — including future you.</p>`,
+  syntax:`statement;
+{
+    statement1;
+    statement2;
+}`,
+  code:`#include <iostream>
+using namespace std;
+
+int main() {
+    int   score   =   95;      // extra spaces around = are legal
+    if (score > 90) { cout << "Grade: A" << endl; }   // works, but hard to read
+
+    // The same logic, formatted for humans:
+    int mark = 95;
+    if (mark > 90) {
+        cout << "Grade: A" << endl;
+    }
+    return 0;
+}`,
+  points:["Whitespace separates tokens but is otherwise ignored by the compiler.","Every simple statement ends with a semicolon.","Blocks are delimited with { } — indentation inside them is a style choice, not a rule.","Blank lines and comments cost nothing at runtime; use them generously."],
+  pitfall:"Forgetting the semicolon is the single most common first-week C++ error — the compiler will report it on the <em>next</em> line, which confuses beginners.",
+  quiz:{q:"Which of these does the C++ compiler actually require to end a statement?",
+    opts:["A new line","A semicolon ;","Four spaces of indentation","A comment"],
+    answer:1, explain:"C++ is whitespace-insensitive. The statement terminator is the semicolon; new lines and indentation are purely for readability."}
+},
+{
+  unit:1, num:"1.2", id:"tokens", title:"Tokens",
+  explain:`<p>A <strong>token</strong> is the smallest unit of meaning the compiler recognises — the "words" of the language. Every line of C++ is broken down into a sequence of tokens before it is understood. There are five kinds:</p>
+  <ul>
+    <li><strong>Keywords</strong> — reserved words with fixed meaning: <code>int</code>, <code>if</code>, <code>return</code>, <code>class</code>.</li>
+    <li><strong>Identifiers</strong> — names you invent for variables, functions, classes: <code>totalMarks</code>, <code>calculateArea</code>.</li>
+    <li><strong>Literals</strong> — constant values written directly: <code>42</code>, <code>3.14</code>, <code>'A'</code>, <code>"Hello"</code>, <code>true</code>.</li>
+    <li><strong>Operators</strong> — symbols that act on values: <code>+</code>, <code>=</code>, <code>&amp;&amp;</code>.</li>
+    <li><strong>Punctuators / separators</strong> — structural symbols: <code>;</code> <code>{ }</code> <code>( )</code> <code>,</code>.</li>
+  </ul>`,
+  syntax:`int totalMarks = 95;
+//  ^kw  ^identifier ^op ^literal ^punctuator`,
+  code:`int totalMarks = 95;      // int(keyword) totalMarks(identifier) =(operator) 95(literal) ;(punctuator)
+double pi = 3.14159;
+char grade = 'A';
+bool passed = true;
+std::string name = "Aravind";`,
+  points:["Identifiers must start with a letter or underscore, and may contain letters, digits and underscores.","Identifiers are case-sensitive: score and Score are different names.","Keywords (int, class, return …) can never be used as identifiers."],
+  pitfall:"Beginners often try identifiers like <code>2ndYear</code> or <code>class</code> as a variable name — both are illegal: identifiers cannot start with a digit, and keywords are reserved.",
+  quiz:{q:"In `int age = 21;`, what kind of token is 21?",
+    opts:["Keyword","Identifier","Literal","Operator"],
+    answer:2, explain:"21 is a constant value written directly into the code — that makes it a literal (specifically an integer literal)."}
+},
+{
+  unit:1, num:"1.3", id:"operators", title:"Operators",
+  explain:`<p>Operators act on one or more values (operands) to produce a result. C++ groups them by purpose:</p>
+  <ul>
+    <li><strong>Arithmetic</strong>: <code>+ - * / %</code></li>
+    <li><strong>Relational</strong>: <code>== != &lt; &gt; &lt;= &gt;=</code> — produce <code>bool</code></li>
+    <li><strong>Logical</strong>: <code>&amp;&amp; || !</code> — combine boolean conditions</li>
+    <li><strong>Assignment</strong>: <code>= += -= *= /= %=</code></li>
+    <li><strong>Increment / decrement</strong>: <code>++ --</code> (prefix and postfix)</li>
+    <li><strong>Bitwise</strong>: <code>&amp; | ^ ~ &lt;&lt; &gt;&gt;</code> — operate on individual bits</li>
+    <li><strong>Ternary</strong>: <code>condition ? valueIfTrue : valueIfFalse</code></li>
+  </ul>
+  <p>Operators follow a strict <strong>precedence and associativity</strong> — for example <code>*</code> and <code>/</code> bind tighter than <code>+</code> and <code>-</code>, exactly like ordinary arithmetic. When in doubt, add parentheses; they cost nothing and remove ambiguity for the next reader.</p>`,
+  syntax:`result = a + b * c;      // * evaluated before +
+bool ok = (x > 0) && (x < 100);
+int y = (x > 0) ? 1 : -1;`,
+  code:`int a = 7, b = 2;
+cout << a / b << endl;   // 3  -- integer division truncates
+cout << a % b << endl;   // 1  -- remainder
+
+int x = 5;
+cout << x++ << endl;     // prints 5, THEN x becomes 6
+cout << ++x << endl;     // x becomes 7 FIRST, then prints 7
+
+bool eligible = (x >= 18) && (x <= 60);
+string label = (x % 2 == 0) ? "even" : "odd";`,
+  points:["/ between two ints performs integer division; use a float/double operand to get a fractional result.","== compares values; = assigns a value — mixing them up is a classic bug.","Prefix ++x increments then returns; postfix x++ returns then increments."],
+  pitfall:"Writing <code>if (x = 5)</code> instead of <code>if (x == 5)</code> compiles fine — it assigns 5 to x and the condition is always true. Most compilers warn about this; never ignore that warning.",
+  quiz:{q:"What does `9 % 4` evaluate to in C++?",
+    opts:["2.25","2","1","0"],
+    answer:2, explain:"% is the modulus operator — it returns the remainder of integer division. 9 divided by 4 is 2 remainder 1, so the result is 1."}
+},
+{
+  unit:1, num:"1.4", id:"control", title:"Control &amp; Conditional Statements",
+  explain:`<p>Control statements decide <em>which</em> code runs and <em>how many times</em>. C++ offers two families:</p>
+  <p><strong>Conditional (branching):</strong> <code>if</code>, <code>if / else</code>, <code>else if</code> chains, and <code>switch</code> for selecting among many constant values of the same variable.</p>
+  <p><strong>Looping (iteration):</strong> <code>for</code> (known number of steps), <code>while</code> (condition checked before each pass), and <code>do...while</code> (condition checked after — so the body always runs at least once). <code>break</code> exits a loop or switch early; <code>continue</code> skips to the next iteration.</p>`,
+  syntax:`if (condition) { ... }
+else if (condition2) { ... }
+else { ... }
+
+switch (value) {
+    case 1: ...; break;
+    case 2: ...; break;
+    default: ...;
+}
+
+for (init; condition; update) { ... }
+while (condition) { ... }
+do { ... } while (condition);`,
+  code:`int day = 3;
+switch (day) {
+    case 1: cout << "Mon"; break;
+    case 2: cout << "Tue"; break;
+    case 3: cout << "Wed"; break;
+    default: cout << "Unknown";
+}
+
+for (int i = 1; i <= 5; i++) {
+    if (i == 3) continue;   // skip 3
+    if (i == 5) break;      // stop before printing 5
+    cout << i << " ";
+}
+// Output: 1 2 4`,
+  points:["A missing break in a switch case falls through into the next case — sometimes intentional, usually a bug.","for is ideal when you know the number of iterations in advance; while/do-while suit condition-driven loops.","Every if without braces controls only the single next statement — add braces to avoid the 'dangling else' trap."],
+  pitfall:"Forgetting <code>break;</code> inside a switch causes execution to silently 'fall through' into the next case — a very common source of hard-to-spot bugs.",
+  quiz:{q:"Which loop guarantees its body executes at least once?",
+    opts:["for","while","do...while","switch"],
+    answer:2, explain:"do...while checks its condition after running the body, so the body always executes at least one time, even if the condition is false from the start."}
+},
+{
+  unit:1, num:"1.5", id:"typeconv", title:"Type Conversions &amp; Casting",
+  explain:`<p>C++ is statically typed, but values often need to move between types. <strong>Implicit conversion</strong> happens automatically when it's safe or conventional — e.g. an <code>int</code> is promoted to a <code>double</code> in a mixed expression. <strong>Explicit casting</strong> is when you tell the compiler exactly what conversion you want:</p>
+  <ul>
+    <li><code>static_cast&lt;T&gt;(x)</code> — the everyday, compile-time-checked cast (int↔float, base↔derived pointers, etc.)</li>
+    <li><code>const_cast&lt;T&gt;(x)</code> — adds or removes <code>const</code>/<code>volatile</code></li>
+    <li><code>dynamic_cast&lt;T&gt;(x)</code> — safe downcasting in polymorphic class hierarchies, checked at runtime</li>
+    <li><code>reinterpret_cast&lt;T&gt;(x)</code> — reinterprets raw bits; powerful and dangerous, rarely needed</li>
+    <li>C-style <code>(T)x</code> — the old syntax inherited from C; works but hides which of the above you actually meant</li>
+  </ul>`,
+  syntax:`double d = static_cast<double>(intValue);
+int i = static_cast<int>(doubleValue);   // truncates, doesn't round`,
+  code:`int a = 7, b = 2;
+double result = static_cast<double>(a) / b;   // 3.5, not 3
+cout << result << endl;
+
+double pi = 3.99;
+int whole = static_cast<int>(pi);   // 3  -- truncation, not rounding
+cout << whole << endl;
+
+char c = 'A';
+int code = c;              // implicit conversion: c -> 65 (its ASCII value)
+cout << code << endl;`,
+  points:["Converting float→int always truncates toward zero; it never rounds.","Prefer static_cast over the old C-style (type) cast — it states intent and the compiler can check it.","Narrowing conversions (double→int, int→char) can silently lose data — the compiler often warns but still allows it."],
+  pitfall:"`static_cast<int>(3.99)` gives 3, not 4 — a frequent source of off-by-one bugs when developers expect rounding.",
+  quiz:{q:"What does static_cast<int>(9.8) evaluate to?",
+    opts:["10","9","9.8","Compile error"],
+    answer:1, explain:"Casting a floating-point value to int truncates the fractional part rather than rounding, so 9.8 becomes 9."}
+},
+{
+  unit:1, num:"1.6", id:"memory", title:"Memory in C++ — Types of Memory",
+  explain:`<p>Every C++ program uses several distinct regions of memory, each with different lifetimes and rules:</p>
+  <ul>
+    <li><strong>Stack</strong> — holds local variables and function call info. Allocated/freed automatically as functions are entered and exited. Fast, but limited in size.</li>
+    <li><strong>Heap (free store)</strong> — allocated on request with <code>new</code>, freed manually with <code>delete</code>. Survives beyond the function that created it; you own the responsibility to free it.</li>
+    <li><strong>Static / Global</strong> — variables declared outside functions, or with the <code>static</code> keyword. They exist for the entire run of the program.</li>
+    <li><strong>Code / Text segment</strong> — stores the compiled instructions themselves, not data.</li>
+  </ul>
+  <p>Understanding which memory a variable lives in explains its lifetime, its speed, and whether you are responsible for cleaning it up.</p>`,
+  syntax:`int x = 5;              // stack — freed automatically
+int* p = new int(5);    // heap  — you must delete p;
+static int counter = 0; // static — lives for the whole program`,
+  code:`void demo() {
+    int localVar = 10;              // STACK: destroyed when demo() returns
+    int* heapVar = new int(20);     // HEAP: survives until you delete it
+    static int callCount = 0;       // STATIC: keeps its value between calls
+    callCount++;
+
+    cout << "local=" << localVar << " heap=" << *heapVar
+         << " calls=" << callCount << endl;
+
+    delete heapVar;                 // manual cleanup — required!
+}`,
+  points:["Stack memory is reclaimed automatically the instant a function returns — no cleanup needed.","Heap memory persists until explicitly delete-d; forgetting to do so is a memory leak.","A static local variable is initialised only once and keeps its value across multiple calls."],
+  pitfall:"Returning a pointer or reference to a local (stack) variable is undefined behaviour — that memory is gone the moment the function returns.",
+  quiz:{q:"Which type of memory must the programmer free manually?",
+    opts:["Stack","Heap","Static (global)","Code segment"],
+    answer:1, explain:"Heap memory, obtained with new, is not cleaned up automatically. It must be released explicitly with delete, or it leaks."}
+},
+{
+  unit:1, num:"1.7", id:"arrays1", title:"Arrays: Multidimensional, Passing to Functions &amp; Character Arrays",
+  explain:`<p>An array stores a fixed-size, contiguous sequence of elements of the same type. A <strong>multidimensional array</strong>, such as <code>int grid[3][4]</code>, is really an array of arrays — 3 rows, each holding 4 ints — stored contiguously in row-major order.</p>
+  <p><strong>Passing to functions:</strong> arrays decay to a pointer to their first element when passed, so the function only ever knows the address, not the size. For a 2D array parameter you must specify every dimension except the first, e.g. <code>void f(int arr[][4])</code>, because the compiler needs the column count to calculate row offsets.</p>
+  <p><strong>Character arrays</strong> are C++'s low-level way of representing text: a sequence of <code>char</code> ending in a null terminator <code>'\\0'</code>. Modern code generally prefers <code>std::string</code>, but char arrays remain common in C-style APIs and buffers.</p>`,
+  syntax:`int grid[3][4];                       // 3 rows, 4 columns
+void printGrid(int g[][4], int rows);  // must state inner dimension
+
+char name[6] = "Rahul";               // 'R''a''h''u''l''\\0'
+char greeting[] = "Hi";               // size auto-computed as 3 (H, i, \\0)
+`,
+  code:`int matrix[2][3] = { {1,2,3}, {4,5,6} };
+
+for (int r = 0; r < 2; r++) {
+    for (int c = 0; c < 3; c++) {
+        cout << matrix[r][c] << " ";
+    }
+    cout << endl;
+}
+
+void printGrid(int g[][3], int rows) {   // column count required
+    for (int r = 0; r < rows; r++)
+        for (int c = 0; c < 3; c++)
+            cout << g[r][c] << " ";
+}
+
+char city[20] = "Trichy";     // char array: ends with a hidden null character
+std::string cityName = "Trichy";  // std::string: modern, safer, resizable`,
+  points:["A 2D array int a[3][4] is stored as one contiguous block of 12 ints in row-major order.","When passing a multidimensional array to a function, every dimension except the leftmost must be specified.","A char array needs one extra byte beyond the visible characters, reserved for the null terminator.","std::string manages its own memory and length; prefer it unless you specifically need a C-style buffer."],
+  pitfall:"Declaring `char name[5] = \"Rahul\";` looks fine but is one byte too small — \"Rahul\" needs 5 letters plus 1 null terminator, i.e. 6 bytes — causing a buffer overrun.",
+  quiz:{q:"Why must a function receiving a 2D array specify the column size, e.g. `void f(int a[][4])`?",
+    opts:["It's just a style convention","The compiler needs it to calculate the memory offset of each row","It sets the maximum number of rows","It is required only for char arrays"],
+    answer:1, explain:"A 2D array is stored as one flat block of memory. To find row r, column c, the compiler computes an offset using the column count — without it, row addresses can't be calculated."}
+},
+{
+  unit:1, num:"1.8", id:"pointers", title:"Pointers: Allocating Memory &amp; Individual Objects",
+  explain:`<p>A <strong>pointer</strong> is a variable that stores a memory address rather than a value directly. The <code>&amp;</code> operator takes the address of a variable; <code>*</code> dereferences a pointer to access the value it points to.</p>
+  <p><strong>Dynamic allocation</strong> lets a program request memory at runtime, from the heap, using <code>new</code>. A single object is allocated with <code>new Type(args)</code> and released with <code>delete ptr;</code>. An array of objects is allocated with <code>new Type[n]</code> and must be released with the matching <code>delete[] ptr;</code> — never mix the two forms.</p>
+  <p>Every <code>new</code> must be paired with exactly one matching <code>delete</code>. Modern C++ encourages smart pointers (<code>std::unique_ptr</code>, <code>std::shared_ptr</code>) which delete automatically, but understanding raw pointers first is essential to understanding how memory actually works underneath.</p>`,
+  syntax:`int x = 10;
+int* p = &x;        // p holds the address of x
+cout << *p;          // dereference: prints 10
+
+int* single = new int(5);      // one object on the heap
+int* arr    = new int[10];     // 10 objects on the heap
+delete single;                  // matching single delete
+delete[] arr;                   // matching array delete`,
+  code:`int score = 42;
+int* ptr = &score;
+cout << "Value: "   << *ptr  << endl;   // 42
+cout << "Address: " << ptr   << endl;   // some hex address
+
+*ptr = 100;                 // changes score through the pointer
+cout << score << endl;      // 100
+
+int* dynamicScore = new int(75);   // allocate one int on the heap
+cout << *dynamicScore << endl;
+delete dynamicScore;               // free it — required!
+dynamicScore = nullptr;            // avoid a dangling pointer
+
+struct Student { string name; int marks; };
+Student* s = new Student{"Divya", 88};   // allocate one object
+cout << s->name << " scored " << s->marks << endl;
+delete s;`,
+  points:["Always initialise a pointer — an uninitialised pointer holds a garbage address and is dangerous to dereference.","Set a pointer to nullptr after delete-ing it, so accidental reuse fails safely instead of silently corrupting memory.","Use -> to access members through a pointer to an object; use . when you have the object itself."],
+  pitfall:"Mismatching new[] with delete (instead of delete[]) — or forgetting delete entirely — are the two most common pointer bugs: the first causes undefined behaviour, the second leaks memory for as long as the program runs.",
+  quiz:{q:"You allocated memory with `int* arr = new int[20];`. How must you free it?",
+    opts:["delete arr;","delete[] arr;","free(arr);","No need — it's freed automatically"],
+    answer:1, explain:"Memory allocated with new[] (an array form) must be released with the matching delete[]. Using plain delete on an array is undefined behaviour."}
+},
+
+// ---------------- UNIT IV ----------------
+{
+  unit:4, num:"4.1", id:"arraysmatrices", title:"Arrays &amp; Matrices as Data Structures",
+  explain:`<p>Seen as a <strong>data structure</strong>, an array is the simplest way to store a fixed-size, ordered collection: elements sit in contiguous memory, so any element can be reached in constant time via its index — <strong>O(1) access</strong>. The trade-off is that inserting or removing an element in the middle requires shifting every element after it — <strong>O(n)</strong> — and the size is fixed once created.</p>
+  <p>A <strong>matrix</strong> is simply a 2D array: a grid of rows and columns, ideal for representing tables, images, grids, and adjacency relationships between items (as used later for graphs).</p>`,
+  syntax:`int arr[5] = {10, 20, 30, 40, 50};
+int matrix[3][3] = {
+  {1,2,3},
+  {4,5,6},
+  {7,8,9}
+};`,
+  code:`int marks[5] = {88, 92, 79, 65, 95};
+cout << marks[2] << endl;      // O(1) direct access -> 79
+
+int identity[3][3] = { {1,0,0}, {0,1,0}, {0,0,1} };
+int transpose[3][3];
+for (int i = 0; i < 3; i++)
+    for (int j = 0; j < 3; j++)
+        transpose[j][i] = identity[i][j];   // classic matrix transpose`,
+  points:["Array access by index is O(1); searching an unsorted array is O(n).","Insertion or deletion in the middle of an array costs O(n) because later elements must shift.","A matrix's row-major layout means traversing row-by-row is more cache-friendly than column-by-column."],
+  pitfall:"C++ performs no automatic bounds checking on raw arrays — reading or writing marks[10] on a 5-element array compiles and runs, but corrupts nearby memory (undefined behaviour).",
+  quiz:{q:"What is the time complexity of accessing a specific element by index in an array?",
+    opts:["O(1)","O(log n)","O(n)","O(n^2)"],
+    answer:0, explain:"Because array elements sit at a predictable offset from the base address, the address of any index is computed directly — constant time, O(1)."}
+},
+{
+  unit:4, num:"4.2", id:"stacks", title:"Stacks",
+  explain:`<p>A <strong>stack</strong> is a <strong>LIFO</strong> (Last-In, First-Out) structure — think of a stack of plates: you add and remove only from the top. Its core operations are:</p>
+  <ul>
+    <li><code>push(x)</code> — add x to the top</li>
+    <li><code>pop()</code> — remove the top element</li>
+    <li><code>peek()</code> / <code>top()</code> — look at the top element without removing it</li>
+    <li><code>isEmpty()</code> — check whether the stack has any elements</li>
+  </ul>
+  <p>Stacks can be built on an array (fast, fixed capacity) or a linked list (flexible size). All core operations run in <strong>O(1)</strong>.</p>`,
+  syntax:`class Stack {
+    int data[100], topIndex = -1;
+public:
+    void push(int x);
+    int  pop();
+    int  peek();
+    bool isEmpty();
+};`,
+  code:`#include <iostream>
+using namespace std;
+
+class Stack {
+    int data[100];
+    int topIndex = -1;
+public:
+    void push(int x) {
+        if (topIndex == 99) { cout << "Stack overflow\\n"; return; }
+        data[++topIndex] = x;
+    }
+    int pop() {
+        if (isEmpty()) { cout << "Stack underflow\\n"; return -1; }
+        return data[topIndex--];
+    }
+    int peek() { return data[topIndex]; }
+    bool isEmpty() { return topIndex == -1; }
+};
+
+int main() {
+    Stack s;
+    s.push(10); s.push(20); s.push(30);
+    cout << s.pop() << endl;   // 30 -- last one in, first one out
+    cout << s.peek() << endl;  // 20
+}`,
+  points:["LIFO: the most recently pushed element is always the first one popped.","push, pop, peek and isEmpty all run in O(1) with an array-backed stack.","The C++ standard library provides std::stack out of the box — no need to hand-roll one in real projects."],
+  pitfall:"Calling pop() or peek() on an empty stack is undefined behaviour — always check isEmpty() first.",
+  quiz:{q:"If you push 1, 2, 3 in that order onto a stack, what does the first pop() return?",
+    opts:["1","2","3","Undefined"],
+    answer:2, explain:"A stack is Last-In, First-Out. 3 was pushed last, so it is the first value returned by pop()."}
+},
+{
+  unit:4, num:"4.3", id:"queues", title:"Queues",
+  explain:`<p>A <strong>queue</strong> is a <strong>FIFO</strong> (First-In, First-Out) structure — like a line at a canteen counter: the first person to join is the first to be served. Core operations:</p>
+  <ul>
+    <li><code>enqueue(x)</code> — add x to the rear</li>
+    <li><code>dequeue()</code> — remove the element at the front</li>
+    <li><code>front()</code> — look at the front element</li>
+    <li><code>isEmpty()</code> — check whether the queue has any elements</li>
+  </ul>
+  <p>A naive array-based queue wastes space as front keeps advancing; a <strong>circular queue</strong> fixes this by wrapping the rear index back to 0 once it passes the last slot. Variants include the <strong>priority queue</strong> (elements leave in priority order, not arrival order) and the <strong>deque</strong> (insertion/removal at both ends).</p>`,
+  syntax:`class Queue {
+    int data[100], front = 0, rear = -1, count = 0;
+public:
+    void enqueue(int x);
+    int  dequeue();
+    bool isEmpty();
+};`,
+  code:`class CircularQueue {
+    int data[5], front = 0, rear = -1, count = 0;
+public:
+    void enqueue(int x) {
+        if (count == 5) { cout << "Queue full\\n"; return; }
+        rear = (rear + 1) % 5;      // wrap around
+        data[rear] = x;
+        count++;
+    }
+    int dequeue() {
+        if (isEmpty()) { cout << "Queue empty\\n"; return -1; }
+        int val = data[front];
+        front = (front + 1) % 5;    // wrap around
+        count--;
+        return val;
+    }
+    bool isEmpty() { return count == 0; }
+};
+// enqueue(1) enqueue(2) enqueue(3) -> dequeue() returns 1 (the first one in)`,
+  points:["FIFO: the earliest element added is always the first one removed.","A plain array queue 'leaks' unused slots at the front over time; a circular queue reuses them by wrapping the index with %.","std::queue and std::priority_queue are ready-made STL containers for everyday use."],
+  pitfall:"Forgetting the modulo wrap-around (`% capacity`) in a circular queue causes an index-out-of-bounds write once rear reaches the end of the array.",
+  quiz:{q:"A queue is best described as:",
+    opts:["Last-In, First-Out","First-In, First-Out","Random access, any order","Sorted order only"],
+    answer:1, explain:"A queue serves elements in the exact order they arrived — First-In, First-Out (FIFO), like a real-world waiting line."}
+},
+{
+  unit:4, num:"4.4", id:"singlylist", title:"Linked Lists — Singly Linked",
+  explain:`<p>A <strong>singly linked list</strong> is a chain of <strong>nodes</strong>, where each node stores a value and a pointer to the <em>next</em> node. Unlike an array, it does not need contiguous memory and can grow or shrink at runtime without shifting elements — but you can only walk it in one direction, and reaching the k-th element costs O(n) because there is no direct indexing.</p>`,
+  syntax:`struct Node {
+    int data;
+    Node* next;
+};
+Node* head = nullptr;   // empty list`,
+  code:`struct Node {
+    int data;
+    Node* next;
+};
+
+void insertAtHead(Node*& head, int value) {
+    Node* newNode = new Node{value, head};
+    head = newNode;
+}
+
+void printList(Node* head) {
+    for (Node* cur = head; cur != nullptr; cur = cur->next)
+        cout << cur->data << " -> ";
+    cout << "nullptr" << endl;
+}
+
+int main() {
+    Node* head = nullptr;
+    insertAtHead(head, 30);
+    insertAtHead(head, 20);
+    insertAtHead(head, 10);
+    printList(head);      // 10 -> 20 -> 30 -> nullptr
+}`,
+  points:["Insertion/deletion at the head is O(1) — no shifting required, unlike an array.","Traversal and search are O(n); there is no random access by index.","Each node must be individually new-ed and, when removed, individually delete-d to avoid leaks."],
+  pitfall:"Deleting a node without first saving a pointer to the next node loses access to the rest of the list, leaking every node after it.",
+  quiz:{q:"What is the main structural difference between an array and a singly linked list?",
+    opts:["Arrays can only store numbers","A linked list uses contiguous memory, arrays don't","A linked list is made of separately allocated nodes linked by pointers, with no contiguous memory requirement","Linked lists support O(1) random access"],
+    answer:2, explain:"An array is one contiguous memory block with index-based access. A linked list is a chain of independently allocated nodes connected by pointers, allowing flexible growth but only sequential access."}
+},
+{
+  unit:4, num:"4.5", id:"doublylist", title:"Linked Lists — Doubly Linked",
+  explain:`<p>A <strong>doubly linked list</strong> extends the singly linked list by giving every node <em>two</em> pointers: <code>next</code> and <code>prev</code>. This allows traversal in both directions and makes deleting a known node O(1) — you don't need to search for its predecessor, because the node already points back to it. The cost is extra memory per node and slightly more bookkeeping on every insert/delete.</p>`,
+  syntax:`struct Node {
+    int data;
+    Node* next;
+    Node* prev;
+};`,
+  code:`struct Node {
+    int data;
+    Node* next;
+    Node* prev;
+};
+
+void insertAtHead(Node*& head, int value) {
+    Node* newNode = new Node{value, head, nullptr};
+    if (head != nullptr) head->prev = newNode;
+    head = newNode;
+}
+
+void printForward(Node* head) {
+    for (Node* cur = head; cur; cur = cur->next) cout << cur->data << " ";
+}
+void printBackward(Node* tail) {
+    for (Node* cur = tail; cur; cur = cur->prev) cout << cur->data << " ";
+}`,
+  points:["Traversal works both forward (via next) and backward (via prev).","Deleting a node you already have a pointer to is O(1) — its prev and next neighbours can be relinked directly.","Every insertion must correctly update prev on the following node, not just next on the previous one — a common source of bugs."],
+  pitfall:"Updating next without also updating the corresponding prev pointer (or vice versa) silently breaks the list in one direction while looking correct in the other.",
+  quiz:{q:"What capability does a doubly linked list add over a singly linked list?",
+    opts:["O(1) random access by index","Backward traversal via a prev pointer","Automatic sorting","Smaller memory footprint per node"],
+    answer:1, explain:"The defining feature of a doubly linked list is the extra prev pointer on each node, enabling traversal in both directions and O(1) deletion given a node pointer."}
+},
+{
+  unit:4, num:"4.6", id:"circularlist", title:"Linked Lists — Circular",
+  explain:`<p>In a <strong>circular linked list</strong>, the last node points back to the first node instead of to <code>nullptr</code> — the chain has no end. This can be built on a singly linked list (last->next = head) or a doubly linked list (both ends wrap). Circular lists are useful whenever data naturally cycles: round-robin CPU scheduling, circular buffers, and multiplayer turn rotation are classic examples.</p>
+  <p>Because there is no natural <code>nullptr</code> stopping point, traversal loops must explicitly check for a return to the starting node, or they will loop forever.</p>`,
+  syntax:`struct Node { int data; Node* next; };
+// last->next points back to head, not nullptr`,
+  code:`struct Node { int data; Node* next; };
+
+void insertAtEnd(Node*& head, int value) {
+    Node* newNode = new Node{value, nullptr};
+    if (!head) { head = newNode; newNode->next = head; return; }
+    Node* cur = head;
+    while (cur->next != head) cur = cur->next;   // find the last node
+    cur->next = newNode;
+    newNode->next = head;                        // close the loop
+}
+
+void printCircular(Node* head, int count) {
+    Node* cur = head;
+    for (int i = 0; i < count; i++) {   // stop after 'count' nodes, not on nullptr
+        cout << cur->data << " ";
+        cur = cur->next;
+    }
+}`,
+  points:["There is no nullptr terminator — the loop condition must check for a return to the head node.","Ideal for round-robin scheduling: after the last process/task, control naturally wraps to the first.","A circular list can be singly or doubly linked; a doubly circular list allows wrap-around traversal in both directions."],
+  pitfall:"Using a normal `while (cur != nullptr)` traversal on a circular list never terminates — it will loop forever, since cur is never null.",
+  quiz:{q:"In a circular linked list, what does the last node's next pointer refer to?",
+    opts:["nullptr","Itself","The head node","The second-to-last node"],
+    answer:2, explain:"Instead of terminating at nullptr, the last node's next pointer wraps back to the head node, closing the list into a loop."}
+},
+{
+  unit:4, num:"4.7", id:"trees", title:"Representing Rooted Trees",
+  explain:`<p>A <strong>rooted tree</strong> models hierarchical data: one <em>root</em> node, with each other node having exactly one <em>parent</em> and zero or more <em>children</em>. For a <strong>binary tree</strong>, where every node has at most two children, the standard representation stores explicit <code>left</code> and <code>right</code> pointers. For a <strong>general tree</strong> (any number of children), two common approaches are an array/list of child pointers per node, or the elegant "first child, next sibling" representation, which stores only two pointers per node no matter how many children it actually has.</p>`,
+  syntax:`struct TreeNode {           // binary tree
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+};`,
+  code:`struct TreeNode {
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int val) : data(val), left(nullptr), right(nullptr) {}
+};
+
+int main() {
+    TreeNode* root = new TreeNode(50);
+    root->left  = new TreeNode(30);
+    root->right = new TreeNode(70);
+    root->left->left  = new TreeNode(20);
+    root->left->right = new TreeNode(40);
+    //          50
+    //        /    \\
+    //      30      70
+    //     /  \\
+    //   20    40
+}`,
+  points:["Every node except the root has exactly one parent; the root has none.","A binary tree caps children at two per node, stored via explicit left/right pointers.","A general tree with unbounded children can still be represented with only two pointers per node using the first-child/next-sibling technique."],
+  pitfall:"Forgetting to initialise left and right to nullptr when creating a node leaves them pointing to garbage memory, causing crashes the first time the tree is traversed.",
+  quiz:{q:"In a rooted binary tree, how many parents does any non-root node have?",
+    opts:["Zero","Exactly one","Up to two","It varies by node"],
+    answer:1, explain:"By definition, in a rooted tree every node except the root has exactly one parent — this single-parent property is what makes it a tree rather than a general graph."}
+},
+{
+  unit:4, num:"4.8", id:"traversal", title:"Tree Traversal Techniques",
+  explain:`<p>Traversal means visiting every node of a tree in a defined order. The three classic <strong>depth-first</strong> orders for a binary tree differ only in when the root is visited relative to its subtrees:</p>
+  <ul>
+    <li><strong>Preorder</strong>: root → left → right</li>
+    <li><strong>Inorder</strong>: left → root → right (visits nodes of a binary <em>search</em> tree in sorted order)</li>
+    <li><strong>Postorder</strong>: left → right → root (useful for safely deleting a tree, since children are visited before their parent)</li>
+  </ul>
+  <p><strong>Level-order</strong> traversal (breadth-first) instead visits nodes level by level, top to bottom, left to right — implemented with a queue rather than recursion.</p>`,
+  syntax:`void inorder(TreeNode* node) {
+    if (!node) return;
+    inorder(node->left);
+    cout << node->data << " ";
+    inorder(node->right);
+}`,
+  code:`void preorder(TreeNode* node) {
+    if (!node) return;
+    cout << node->data << " ";
+    preorder(node->left);
+    preorder(node->right);
+}
+
+void inorder(TreeNode* node) {
+    if (!node) return;
+    inorder(node->left);
+    cout << node->data << " ";
+    inorder(node->right);
+}
+
+void postorder(TreeNode* node) {
+    if (!node) return;
+    postorder(node->left);
+    postorder(node->right);
+    cout << node->data << " ";
+}
+
+void levelOrder(TreeNode* root) {
+    if (!root) return;
+    queue<TreeNode*> q;
+    q.push(root);
+    while (!q.empty()) {
+        TreeNode* cur = q.front(); q.pop();
+        cout << cur->data << " ";
+        if (cur->left)  q.push(cur->left);
+        if (cur->right) q.push(cur->right);
+    }
+}`,
+  points:["Inorder traversal of a binary search tree always produces values in ascending sorted order.","Postorder is the safe order for deleting a tree node-by-node, since a node's children are freed before the node itself.","Level-order traversal needs a queue (FIFO) — a natural pairing with the queue data structure covered earlier in this unit."],
+  pitfall:"Confusing preorder and postorder is easy — remember: 'pre' means the root comes first, 'post' means the root comes last, and 'in' means it sits in between its children.",
+  quiz:{q:"Which traversal visits nodes of a binary search tree in ascending sorted order?",
+    opts:["Preorder","Inorder","Postorder","Level-order"],
+    answer:1, explain:"Inorder traversal (left, root, right) matches the ordering property of a binary search tree exactly, producing values from smallest to largest."}
+},
+{
+  unit:4, num:"4.9", id:"applications", title:"Applications of Stacks and Queues",
+  explain:`<p>These two structures quietly power a huge amount of everyday software:</p>
+  <p><strong>Stack applications</strong>: function call management (the "call stack" that makes recursion possible), undo/redo history in editors, browser back-button history, matching/validating balanced brackets, and converting/evaluating infix, postfix and prefix expressions.</p>
+  <p><strong>Queue applications</strong>: CPU and printer task scheduling (first job submitted, first job served), buffering data between a fast producer and a slow consumer (e.g. keystrokes, network packets), and breadth-first search (BFS) traversal of trees and graphs.</p>`,
+  syntax:`bool isBalanced(string expr);   // stack-based bracket checker
+void bfs(Graph& g, int start);  // queue-based traversal`,
+  code:`bool isBalanced(string expr) {
+    stack<char> s;
+    for (char c : expr) {
+        if (c == '(' || c == '[' || c == '{') s.push(c);
+        else if (c == ')' || c == ']' || c == '}') {
+            if (s.empty()) return false;
+            char top = s.top(); s.pop();
+            if ((c == ')' && top != '(') ||
+                (c == ']' && top != '[') ||
+                (c == '}' && top != '{')) return false;
+        }
+    }
+    return s.empty();
+}
+// isBalanced("{[a+(b*c)]}") -> true
+// isBalanced("{[a+(b*c]}")  -> false`,
+  points:["Every recursive function call in C++ implicitly uses the call stack — deep recursion can overflow it, just like a hand-rolled stack.","Balanced-bracket checking is the textbook example of a stack solving a real parsing problem.","Breadth-first search always uses a queue; depth-first search naturally uses a stack (or recursion, which is a stack in disguise)."],
+  pitfall:"Trying to solve balanced-bracket checking or expression evaluation with a queue instead of a stack usually fails — the LIFO property is what makes 'most recent unmatched item' easy to find.",
+  quiz:{q:"Breadth-first search (BFS) traversal of a graph or tree is naturally implemented using a:",
+    opts:["Stack","Queue","Sorted array","Hash table"],
+    answer:1, explain:"BFS explores level by level, visiting all neighbours of a node before moving further out — exactly the FIFO order a queue provides."}
+},
+];
+
+/* ============================= RENDER ============================= */
+function escapeHtml(str){
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+const CPP_KEYWORDS = "int|float|double|char|bool|void|class|struct|public|private|protected|static|const|return|if|else|for|while|do|switch|case|break|continue|new|delete|namespace|using|template|typename|nullptr|true|false|this|virtual|override|friend|enum|union|typedef|sizeof|throw|try|catch|auto|unsigned|signed|long|short|inline|operator|explicit|string";
+
+function highlightCpp(raw){
+  const escaped = escapeHtml(raw);
+  const re = new RegExp(
+    "(//.*$)" +                          // 1 line comment
+    "|(/\\*[\\s\\S]*?\\*/)" +            // 2 block comment
+    '|("(?:[^"\\\\]|\\\\.)*")' +         // 3 string
+    "|('(?:[^'\\\\]|\\\\.)*')" +         // 4 char
+    "|(#\\w+)" +                          // 5 preprocessor
+    "|(\\b(?:" + CPP_KEYWORDS + ")\\b)" +// 6 keyword
+    "|(\\b\\d+\\.?\\d*[fFlL]?\\b)",       // 7 number
+    "gm"
+  );
+  return escaped.replace(re, function(m, com1, com2, str, ch, pp, kw, num){
+    if (com1 || com2) return '<span class="tok-com">' + m + '</span>';
+    if (str) return '<span class="tok-str">' + m + '</span>';
+    if (ch) return '<span class="tok-str">' + m + '</span>';
+    if (pp) return '<span class="tok-pp">' + m + '</span>';
+    if (kw) return '<span class="tok-kw">' + m + '</span>';
+    if (num) return '<span class="tok-num">' + m + '</span>';
+    return m;
+  });
+}
+
+const state = { done:{}, activeUnit:1 };
+
+function buildTopicCard(t){
+  const div = document.createElement('div');
+  div.className = 'topic-card';
+  div.id = t.id;
+  div.dataset.title = (t.title + ' ' + t.num).toLowerCase();
+  div.dataset.unit = t.unit;
+
+  div.innerHTML = `
+    <div class="topic-head">
+      <div class="topic-head-left">
+        <span class="topic-badge">${t.num}</span>
+        <h3>${t.title}</h3>
+      </div>
+      <button class="mark-btn" data-id="${t.id}"><span class="dot"></span><span class="mb-label">Mark understood</span></button>
+    </div>
+    ${t.explain}
+    <div class="section-label">Syntax</div>
+    <div class="syntax-box">${highlightCpp(t.syntax)}</div>
+    <div class="section-label">Code Snippet</div>
+    <div class="code-block">
+      <button class="copy-btn" data-code="${t.id}">Copy</button>
+      <pre><code>${highlightCpp(t.code)}</code></pre>
+    </div>
+    <div class="callout points"><span class="cicon">✓</span><div><strong>Key points</strong><ul>${t.points.map(p=>'<li>'+p+'</li>').join('')}</ul></div></div>
+    <div class="callout pitfall"><span class="cicon">⚠</span><div><strong>Common pitfall</strong><br>${t.pitfall}</div></div>
+    <div class="quiz-box">
+      <div class="qtitle">Quick check</div>
+      <div class="qtext">${t.quiz.q}</div>
+      <div class="quiz-opts" data-answer="${t.quiz.answer}"></div>
+      <div class="quiz-explain">${t.quiz.explain}</div>
+    </div>
+  `;
+
+  const optsWrap = div.querySelector('.quiz-opts');
+  t.quiz.opts.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.className = 'quiz-opt';
+    b.textContent = opt;
+    b.dataset.idx = i;
+    b.addEventListener('click', () => {
+      const answer = parseInt(optsWrap.dataset.answer, 10);
+      [...optsWrap.children].forEach(c => c.disabled = true);
+      if (i === answer) {
+        b.classList.add('correct');
+      } else {
+        b.classList.add('wrong');
+        optsWrap.children[answer].classList.add('correct');
+      }
+      div.querySelector('.quiz-explain').classList.add('show');
+    });
+    optsWrap.appendChild(b);
+  });
+
+  div.querySelector('.mark-btn').addEventListener('click', (e) => {
+    const btn = e.currentTarget;
+    state.done[t.id] = !state.done[t.id];
+    updateMarkButton(btn, state.done[t.id]);
+    updateProgress();
+    updateNavItem(t.id);
+  });
+
+  div.querySelector('.copy-btn').addEventListener('click', (e) => {
+    navigator.clipboard.writeText(t.code).then(() => {
+      const b = e.currentTarget;
+      const old = b.textContent;
+      b.textContent = 'Copied!';
+      setTimeout(() => b.textContent = old, 1200);
+    });
+  });
+
+  return div;
+}
+
+function updateMarkButton(btn, done){
+  btn.classList.toggle('done', done);
+  btn.querySelector('.mb-label').textContent = done ? 'Understood' : 'Mark understood';
+}
+
+function updateProgress(){
+  const total = TOPICS.length;
+  const doneCount = Object.values(state.done).filter(Boolean).length;
+  document.getElementById('progressFill').style.width = (doneCount/total*100) + '%';
+  document.getElementById('progressLabel').textContent = doneCount + ' / ' + total + ' topics mastered';
+}
+
+function updateNavItem(id){
+  const item = document.querySelector('.nav-item[data-id="'+id+'"]');
+  if (item) item.classList.toggle('done', !!state.done[id]);
+}
+
+function buildNav(){
+  const container = document.getElementById('navContainer');
+  container.innerHTML = '';
+  [1,4].forEach(unitNum => {
+    const groupTitle = document.createElement('div');
+    groupTitle.className = 'nav-group-title';
+    groupTitle.textContent = unitNum === 1 ? 'Unit I' : 'Unit IV';
+    container.appendChild(groupTitle);
+    const ul = document.createElement('ul');
+    ul.className = 'nav-list';
+    TOPICS.filter(t => t.unit === unitNum).forEach(t => {
+      const li = document.createElement('li');
+      li.className = 'nav-item';
+      li.dataset.id = t.id;
+      li.dataset.title = (t.title + ' ' + t.num).toLowerCase();
+      li.innerHTML = `<span class="nav-num">${t.num}</span><span>${t.title.replace(/&amp;/g,'&')}</span>`;
+      li.addEventListener('click', () => {
+        document.getElementById(t.id).scrollIntoView({behavior:'smooth', block:'start'});
+        [...document.querySelectorAll('.topic-card')].forEach(c => c.classList.remove('spotlight'));
+        document.getElementById(t.id).classList.add('spotlight');
+        if (window.innerWidth <= 900) document.getElementById('sidebar').classList.remove('open');
+      });
+      ul.appendChild(li);
+    });
+    container.appendChild(ul);
+  });
+}
+
+function renderAll(){
+  const u1 = document.getElementById('unit1Content');
+  const u4 = document.getElementById('unit4Content');
+  TOPICS.filter(t => t.unit === 1).forEach(t => u1.appendChild(buildTopicCard(t)));
+  TOPICS.filter(t => t.unit === 4).forEach(t => u4.appendChild(buildTopicCard(t)));
+  buildNav();
+  updateProgress();
+}
+
+renderAll();
+
+/* ---- Unit tab switching (scrolls to banner) ---- */
+document.getElementById('tabUnit1').addEventListener('click', () => {
+  document.getElementById('tabUnit1').classList.add('active');
+  document.getElementById('tabUnit4').classList.remove('active');
+  document.getElementById('banner1').scrollIntoView({behavior:'smooth'});
+});
+document.getElementById('tabUnit4').addEventListener('click', () => {
+  document.getElementById('tabUnit4').classList.add('active');
+  document.getElementById('tabUnit1').classList.remove('active');
+  document.getElementById('banner4').scrollIntoView({behavior:'smooth'});
+});
+
+/* ---- Search filter (sidebar + main content) ---- */
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  const navItems = document.querySelectorAll('.nav-item');
+  const cards = document.querySelectorAll('.topic-card');
+  let anyVisible = false;
+  navItems.forEach(item => {
+    const match = item.dataset.title.includes(q);
+    item.classList.toggle('hidden', !match);
+    if (match) anyVisible = true;
+  });
+  cards.forEach(card => {
+    const match = card.dataset.title.includes(q);
+    card.classList.toggle('hidden', !match);
+  });
+  document.querySelectorAll('.nav-group-title').forEach(gt => {
+    const unitNum = gt.textContent.includes('IV') ? 4 : 1;
+    const anyInGroup = [...document.querySelectorAll('.nav-item[data-id]')]
+      .filter(i => TOPICS.find(t => t.id === i.dataset.id && t.unit === unitNum))
+      .some(i => !i.classList.contains('hidden'));
+    gt.style.display = anyInGroup ? '' : 'none';
+    gt.nextElementSibling.style.display = anyInGroup ? '' : 'none';
+  });
+  document.getElementById('noResults').style.display = anyVisible ? 'none' : 'block';
+});
+
+/* ---- Mobile sidebar toggle ---- */
+document.getElementById('sidebarToggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+/* ---- Highlight current section in sidebar while scrolling ---- */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('current'));
+      const navItem = document.querySelector('.nav-item[data-id="'+entry.target.id+'"]');
+      if (navItem) navItem.classList.add('current');
+      const unit = entry.target.dataset.unit;
+      document.getElementById('tabUnit1').classList.toggle('active', unit === '1');
+      document.getElementById('tabUnit4').classList.toggle('active', unit === '4');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+document.querySelectorAll('.topic-card').forEach(c => observer.observe(c));
+</script>
+</body>
+</html>
