@@ -354,9 +354,51 @@
     .quiz-box{padding:14px;}
     .g2r2-credit{justify-content:center;}
   }
+
+  /* ---- Transparent Back-to-Top Rocket ---- */
+  .rocket-top{
+    position:fixed; right:24px; bottom:22px; z-index:9999;
+    width:58px; height:70px; padding:0; margin:0;
+    border:0; outline:0; background:transparent !important;
+    box-shadow:none !important; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transform:translateY(18px);
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .rocket-top.visible{opacity:1; pointer-events:auto; transform:translateY(0);}
+  .rocket-top .rocket{
+    display:block; font-size:38px; line-height:1;
+    filter:drop-shadow(0 3px 3px rgba(0,0,0,.16));
+    transform:rotate(-45deg);
+    transition:transform .2s ease;
+  }
+  .rocket-top .flame{
+    position:absolute; left:18px; bottom:3px;
+    font-size:22px; line-height:1; opacity:.9;
+    transform:rotate(45deg);
+    animation:flameFlicker .16s infinite alternate;
+  }
+  .rocket-top:hover .rocket{transform:rotate(-45deg) scale(1.12);}
+  .rocket-top.launching .rocket{animation:rocketBlast .85s cubic-bezier(.2,.75,.2,1) forwards;}
+  .rocket-top.launching .flame{animation:flameBlast .45s ease-out forwards;}
+  @keyframes flameFlicker{from{transform:rotate(45deg) scale(.9);opacity:.65}to{transform:rotate(45deg) scale(1.12);opacity:1}}
+  @keyframes rocketBlast{0%{transform:rotate(-45deg) translate(0,0) scale(1)}100%{transform:rotate(-45deg) translate(0,-115px) scale(1.08)}}
+  @keyframes flameBlast{0%{opacity:.9;transform:rotate(45deg) scale(1)}100%{opacity:0;transform:rotate(45deg) translateY(42px) scale(1.8)}}
+  @media (max-width:520px){
+    .rocket-top{right:14px;bottom:14px;width:52px;height:64px;}
+    .rocket-top .rocket{font-size:34px;}
+  }
+
 </style>
 </head>
 <body>
+
+<!-- Transparent floating Back-to-Top Rocket -->
+<button class="rocket-top" id="rocketTop" aria-label="Back to top" title="Blast to the top">
+  <span class="rocket" aria-hidden="true">🚀</span>
+  <span class="flame" aria-hidden="true">🔥</span>
+</button>
+
 
 <header class="masthead">
   <div class="masthead-top">
@@ -366,7 +408,7 @@
     </div>
   </div>
   <h1 class="manual-title">C++ Study Manual <span>// interactive edition</span></h1>
-  <p class="manual-sub">A hands-on companion for Unit I (C++ Foundations) and Unit IV (Fundamental Data Structures) — read the idea, see the syntax, run the code in your head, then test yourself.</p>
+  <p class="manual-sub">A hands-on companion for Units I, III, IV & V — read the idea, see the syntax, run the code in your head, then test yourself.</p>
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
     <div class="progress-label" id="progressLabel">0 / 17 topics mastered</div>
@@ -382,7 +424,9 @@
     </div>
     <div class="unit-tabs">
       <div class="unit-tab active" data-unit="1" id="tabUnit1">Unit I</div>
+      <div class="unit-tab" data-unit="3" id="tabUnit3">Unit III</div>
       <div class="unit-tab" data-unit="4" id="tabUnit4">Unit IV</div>
+      <div class="unit-tab" data-unit="5" id="tabUnit5">Unit V</div>
     </div>
     <div id="navContainer"></div>
     <div class="no-results" id="noResults">No topics match your search.</div>
@@ -404,6 +448,15 @@
     </section>
     <div id="unit1Content"></div>
 
+    <section class="unit-banner" id="banner3" style="margin-top:10px;">
+      <div>
+        <h2>Unit III — Object-Oriented Programming &amp; Exception Handling</h2>
+        <p>Classes, objects, static members, overloading, inheritance, runtime polymorphism, virtual functions, exceptions and functions.</p>
+      </div>
+      <div class="tag">9 topics</div>
+    </section>
+    <div id="unit3Content"></div>
+
     <section class="unit-banner" id="banner4" style="margin-top:10px;">
       <div>
         <h2>Unit IV — Fundamental Data Structures</h2>
@@ -412,6 +465,15 @@
       <div class="tag">9 topics</div>
     </section>
     <div id="unit4Content"></div>
+
+    <section class="unit-banner" id="banner5" style="margin-top:10px;">
+      <div>
+        <h2>Unit V — Hashing &amp; B-Trees</h2>
+        <p>Direct addressing, hash functions, collisions, chaining, open addressing, B-Tree search, insertion, deletion and applications.</p>
+      </div>
+      <div class="tag">7 topics</div>
+    </section>
+    <div id="unit5Content"></div>
   </main>
 </div>
 
@@ -1009,6 +1071,380 @@ void bfs(Graph& g, int start);  // queue-based traversal`,
 },
 ];
 
+
+const EXTRA_TOPICS = [
+{
+ unit:3,num:"3.1",id:"classesobjects",title:"Classes & Objects",
+ explain:`<p>A <strong>class</strong> is a blueprint that describes the data and functions an object can have. An <strong>object</strong> is an actual instance created from that class.</p><p>For example, <code>Student</code> can describe what every student object contains. <code>Student student1;</code> creates an actual object from that design.</p>`,
+ syntax:`class Student {
+public:
+    string name;
+    int registerNo;
+};
+
+Student student1;`,
+ code:`class Student {
+public:
+    string name;
+    int registerNo;
+
+    void display() {
+        cout << name << " - " << registerNo << endl;
+    }
+};
+
+Student student1;
+student1.name = "Riya";
+student1.registerNo = 101;
+student1.display();`,
+ points:["Class = blueprint or design.","Object = actual instance of a class.","Objects use the members defined by their class.","Classes group related data and behaviour together."],
+ pitfall:"Do not confuse the class name with an object name. Student is the class; student1 is an object.",
+ quiz:{q:"Which statement correctly describes Student student1;?",opts:["Student is an object","student1 is a class","student1 is an object of class Student","Both are functions"],answer:2,explain:"Student is the class type, while student1 is the actual object created from that class."}
+},
+{
+ unit:3,num:"3.2",id:"staticmember",title:"Static Data Members",
+ explain:`<p>A normal data member normally has a separate copy for every object. A <strong>static data member</strong> has one shared copy for the class, so all objects refer to the same class-level data.</p><p>This is useful when information belongs to the class as a whole, such as an object count.</p>`,
+ syntax:`class Student {
+public:
+    static int count;
+};
+
+int Student::count = 0;`,
+ code:`class Student {
+public:
+    static int count;
+    Student() { count++; }
+};
+
+int Student::count = 0;
+
+Student a;
+Student b;
+Student c;
+
+cout << Student::count;   // 3`,
+ points:["One shared copy exists for the class.","It is normally defined outside the class using ::.","It can be accessed through the class name.","All objects see the same value."],
+ pitfall:"Three objects do not create three copies of a static data member. They share one class-level variable.",
+ quiz:{q:"What provides one shared copy for all objects of a class?",opts:["Local variable","Static data member","Function parameter","Constructor only"],answer:1,explain:"A static data member belongs to the class as a whole and is shared by its objects."}
+},
+{
+ unit:3,num:"3.3",id:"functionoverload",title:"Function Overloading",
+ explain:`<p><strong>Function overloading</strong> means using the same function name for related operations while changing the parameter list. The compiler selects the version that matches the arguments.</p><p>The functions must differ in their parameters. Changing only the return type is not enough.</p>`,
+ syntax:`int area(int side);
+double area(double radius);
+int area(int length, int breadth);`,
+ code:`int area(int side) {
+    return side * side;
+}
+
+double area(double radius) {
+    return 3.14 * radius * radius;
+}
+
+int area(int length, int breadth) {
+    return length * breadth;
+}
+
+cout << area(5);
+cout << area(3.0);
+cout << area(5, 4);`,
+ points:["Same function name is reused for related operations.","Parameter lists must differ.","The compiler resolves the call from the arguments.","It is a form of compile-time polymorphism."],
+ pitfall:"Changing only the return type does not create a valid overloaded function.",
+ quiz:{q:"Which change can create a valid overloaded version?",opts:["Only changing return type","Changing the parameter list","Changing comments","Changing local variable names"],answer:1,explain:"Overloaded functions must have different parameter lists."}
+},
+{
+ unit:3,num:"3.4",id:"operatoroverload",title:"Operator Overloading",
+ explain:`<p><strong>Operator overloading</strong> gives an existing C++ operator meaningful behaviour for a user-defined type. For example, we can define what <code>Point + Point</code> means.</p>`,
+ syntax:`Point operator+(Point other) {
+    // define + for Point objects
+}`,
+ code:`class Point {
+public:
+    int x, y;
+
+    Point operator+(Point other) {
+        Point result;
+        result.x = x + other.x;
+        result.y = y + other.y;
+        return result;
+    }
+};
+
+Point p1{2, 3};
+Point p2{4, 1};
+Point p3 = p1 + p2;   // (6,4)`,
+ points:["An existing operator can be given behaviour for a class.","The familiar operator syntax remains.","The operation should be logical for the objects.","The function is named operator followed by the symbol."],
+ pitfall:"Operator overloading does not create a brand-new operator symbol.",
+ quiz:{q:"What is being defined by Point operator+(Point other)?",opts:["A new keyword","The + operator for Point objects","A constructor only","A static variable"],answer:1,explain:"The function defines how + behaves for Point objects."}
+},
+{
+ unit:3,num:"3.5",id:"inheritance",title:"Inheritance",
+ explain:`<p><strong>Inheritance</strong> allows a derived class to acquire accessible members of a base class. It commonly represents an <em>is-a</em> relationship: a Dog is an Animal.</p>`,
+ syntax:`class Animal {
+public:
+    void eat();
+};
+
+class Dog : public Animal {
+public:
+    void bark();
+};`,
+ code:`class Animal {
+public:
+    void eat() {
+        cout << "Eating";
+    }
+};
+
+class Dog : public Animal {
+public:
+    void bark() {
+        cout << "Barking";
+    }
+};
+
+Dog d;
+d.eat();    // inherited
+d.bark();   // own function`,
+ points:["Base class = parent class.","Derived class = child class.","Public inheritance preserves public accessibility.","Inheritance promotes reuse of common functionality."],
+ pitfall:"Private members of the base class are not automatically directly accessible in the derived class.",
+ quiz:{q:"If Dog inherits publicly from Animal, what is the best interpretation?",opts:["Dog is an Animal","Animal is a Dog","They are unrelated","Dog cannot use inherited public functions"],answer:0,explain:"Public inheritance commonly models an is-a relationship: a Dog is an Animal."}
+},
+{
+ unit:3,num:"3.6",id:"virtualpoly",title:"Runtime Polymorphism & Virtual Functions",
+ explain:`<p><strong>Runtime polymorphism</strong> allows the function executed to depend on the actual object at runtime. A common C++ mechanism is inheritance, overriding, a base pointer/reference, and a <code>virtual</code> function.</p><p>The key idea is: the pointer may be <code>Employee*</code>, but the actual object can be a <code>Teacher</code>. With a virtual function, the overridden function of the actual object is selected.</p>`,
+ syntax:`Employee *e;
+Teacher t;
+
+e = &t;
+e->show();`,
+ code:`class Employee {
+public:
+    virtual void show() {
+        cout << "Employee";
+    }
+};
+
+class Teacher : public Employee {
+public:
+    void show() override {
+        cout << "Teacher";
+    }
+};
+
+Employee* e;
+Teacher t;
+e = &t;
+e->show();       // Teacher`,
+ points:["Inheritance connects parent and child classes.","The derived class overrides the function.","A base pointer/reference can refer to a derived object.","virtual enables runtime dispatch."],
+ pitfall:"Without virtual dispatch, a call through a base pointer can select the base-class version.",
+ quiz:{q:"Employee* points to a Teacher object and show() is virtual. Which version is selected?",opts:["Teacher::show()","Employee constructor","A random function","No function"],answer:0,explain:"The actual object is Teacher, so runtime dispatch selects Teacher::show()."}
+},
+{
+ unit:3,num:"3.7",id:"exceptions",title:"Exception Handling — try, throw & catch",
+ explain:`<p><strong>Exception handling</strong> provides a structured way to deal with unusual situations during execution. The important keywords are <code>try</code>, <code>throw</code>, and <code>catch</code>.</p><p><code>try</code> contains risky code, <code>throw</code> reports the problem, and <code>catch</code> handles it.</p>`,
+ syntax:`try {
+    // risky code
+    throw value;
+}
+catch (type variable) {
+    // handle the problem
+}`,
+ code:`int a = 10;
+int b = 0;
+
+try {
+    if (b == 0)
+        throw "Division by zero";
+
+    cout << a / b;
+}
+catch (const char* message) {
+    cout << message;
+}`,
+ points:["try = attempt risky code.","throw = send/report an exception.","catch = receive and handle it.","Exception handling separates normal logic from error-handling logic."],
+ pitfall:"A thrown exception needs a suitable catch handler if the program is to handle it normally.",
+ quiz:{q:"Which keyword sends an exception to be handled?",opts:["try","throw","catch","switch"],answer:1,explain:"throw reports the exceptional situation; catch receives and handles it."}
+},
+{
+ unit:3,num:"3.8",id:"functionsreference",title:"Functions & Pass-by-Reference",
+ explain:`<p>A <strong>function</strong> is a named block of code that performs a specific task. <strong>Pass-by-reference</strong> allows a parameter to refer to the caller's original variable. The <code>&amp;</code> in <code>int &amp;total</code> makes this possible.</p>`,
+ syntax:`void calculate(int a, int b, int c,
+                 int &total, float &average);`,
+ code:`void calculate(int a, int b, int c,
+                 int &total, float &average) {
+    total = a + b + c;
+    average = total / 3.0;
+}
+
+int total;
+float average;
+
+calculate(70, 80, 90, total, average);
+
+// total = 240
+// average = 80`,
+ points:["Functions divide a program into meaningful tasks.","A reference parameter can modify the caller's original variable.","References are useful when a function must produce more than one result.","The & is part of the reference parameter declaration."],
+ pitfall:"Do not confuse pass-by-reference with pass-by-value. A normal parameter receives a separate value.",
+ quiz:{q:"Why is int &total useful here?",opts:["It prevents total changing","It lets the function modify the original total","It makes total constant","It creates a class"],answer:1,explain:"The reference parameter refers to the caller's original variable."}
+},
+{
+ unit:3,num:"3.9",id:"oopmap",title:"Unit III Concept Map",
+ explain:`<p>These concepts connect. A <strong>class</strong> creates objects. <strong>Inheritance</strong> connects related classes. <strong>Overriding + virtual functions</strong> support runtime polymorphism. <strong>Functions</strong> organise computation, while <strong>exception handling</strong> deals with exceptional situations.</p>`,
+ syntax:`Class → Object
+Inheritance → Overriding → virtual → Runtime polymorphism
+Function → Parameters → Reference
+try → throw → catch`,
+ code:`class Employee {
+public:
+    virtual void show() {
+        cout << "Employee";
+    }
+};
+
+class Teacher : public Employee {
+public:
+    void show() override {
+        cout << "Teacher";
+    }
+};`,
+ points:["Class/object = basic OOP structure.","Inheritance = reuse and relationship.","Virtual + overriding = runtime polymorphism.","try/throw/catch = exception-handling flow.","Functions + references = organised computation."],
+ pitfall:"Do not memorise the terms separately. Be able to explain how the concepts connect.",
+ quiz:{q:"Which sequence best represents runtime polymorphism?",opts:["Class → array → hash","Inheritance → overriding → virtual dispatch","try → catch → array","Function → loop → matrix"],answer:1,explain:"Runtime polymorphism commonly combines inheritance, overriding and virtual functions."}
+},
+{
+ unit:5,num:"5.1",id:"directaddress",title:"Direct-Address Tables",
+ explain:`<p>A <strong>direct-address table</strong> uses the key itself as the table index. If the key is 5, the data can be stored at <code>table[5]</code>. This makes lookup direct but can waste space when keys are large or sparse.</p>`,
+ syntax:`key = 5;
+table[key] = data;`,
+ code:`int table[10] = {0};
+
+int key = 5;
+table[key] = 90;
+
+cout << table[5];     // 90`,
+ points:["The key directly determines the array position.","Lookup can be O(1).","It works best when the key range is small and dense.","Large or sparse key ranges can waste memory."],
+ pitfall:"A very large key can require a huge direct-address table if used directly as an array index.",
+ quiz:{q:"In direct addressing, where is data for key 7 normally stored?",opts:["table[0]","table[7]","table[70]","Randomly"],answer:1,explain:"The key itself is used as the table index."}
+},
+{
+ unit:5,num:"5.2",id:"hashfunction",title:"Hash Functions & Hash Tables",
+ explain:`<p><strong>Hashing</strong> maps a key to an index in a smaller table using a <strong>hash function</strong>. For a table of size 10, a simple function is <code>h(key) = key % 10</code>.</p>`,
+ syntax:`h(key) = key % tableSize`,
+ code:`int hashFunction(int key) {
+    return key % 10;
+}
+
+cout << hashFunction(23);  // 3
+cout << hashFunction(47);  // 7`,
+ points:["A hash function converts a key into a table index.","The table size determines the range of valid indices.","A good hash function distributes keys reasonably well.","Hashing is designed for fast key-based access."],
+ pitfall:"The hash function produces an index, not necessarily the original key.",
+ quiz:{q:"For a table of size 10, what is h(37) using key % 10?",opts:["3","7","10","37"],answer:1,explain:"37 % 10 gives remainder 7."}
+},
+{
+ unit:5,num:"5.3",id:"collisions",title:"Collision in Hashing",
+ explain:`<p>A <strong>collision</strong> occurs when two or more different keys produce the same hash index. For a table of size 10, 23, 43 and 13 all map to index 3.</p>`,
+ syntax:`23 % 10 = 3
+43 % 10 = 3
+13 % 10 = 3`,
+ code:`int keys[] = {23, 43, 13};
+
+for (int key : keys) {
+    cout << key << " -> "
+         << key % 10 << endl;
+}
+
+// 23 -> 3
+// 43 -> 3
+// 13 -> 3`,
+ points:["Collision means different keys map to the same location.","Collisions are expected and must be resolved.","The hash function affects how often collisions occur.","Chaining and open addressing are common resolution methods."],
+ pitfall:"A collision is not necessarily an error. It is a situation the hash-table design must handle.",
+ quiz:{q:"If 23 and 43 both map to index 3, what has happened?",opts:["Inheritance","Collision","Overloading","Tree rotation"],answer:1,explain:"Different keys have produced the same hash index."}
+},
+{
+ unit:5,num:"5.4",id:"chaining",title:"Collision Resolution — Chaining",
+ explain:`<p><strong>Chaining</strong> keeps multiple values associated with the same hash index in a chain, commonly using a linked list or another collection.</p><p>If 23, 43 and 13 all map to 3, the bucket at index 3 can contain <code>23 → 43 → 13</code>.</p>`,
+ syntax:`table[3] → 23 → 43 → 13`,
+ code:`vector<int> table[10];
+
+int keys[] = {23, 43, 13, 27, 37};
+
+for (int key : keys) {
+    int index = key % 10;
+    table[index].push_back(key);
+}
+
+// table[3] = {23, 43, 13}
+// table[7] = {27, 37}`,
+ points:["Each index acts as a bucket.","Colliding keys are stored together in that bucket.","A linked list or collection can implement the chain.","Searching a bucket requires checking its stored values."],
+ pitfall:"Chaining keeps collided values associated with their original hash index; it does not simply discard them.",
+ quiz:{q:"Where would 23, 43 and 13 be stored using chaining with h(key)=key%10?",opts:["Three unrelated tables","One chain at index 3","Only index 0","A B-Tree root"],answer:1,explain:"All three keys hash to 3, so they are kept together in the bucket at index 3."}
+},
+{
+ unit:5,num:"5.5",id:"openaddressing",title:"Collision Resolution — Open Addressing",
+ explain:`<p>In <strong>open addressing</strong>, all records remain inside the hash table. If the preferred slot is occupied, another position is probed according to a rule such as linear probing.</p>`,
+ syntax:`index = h(key);
+
+if (occupied(index))
+    index = (index + 1) % tableSize;`,
+ code:`// Linear probing
+// 23 -> 3
+// 43 -> 3 occupied, try 4
+// 13 -> 3 occupied, 4 occupied, try 5
+
+// index 3 : 23
+// index 4 : 43
+// index 5 : 13`,
+ points:["Records stay inside the table.","A probing method finds another position.","Linear probing checks consecutive positions.","Modulo arithmetic can provide wrap-around."],
+ pitfall:"Forgetting wrap-around can produce an index outside the table.",
+ quiz:{q:"In linear probing, what happens when the preferred slot is occupied?",opts:["Delete the key","Probe another table position","Rebuild as a B-Tree","Turn the key into a class"],answer:1,explain:"Open addressing probes other positions according to the selected strategy."}
+},
+{
+ unit:5,num:"5.6",id:"btreeintro",title:"B-Trees — Structure & Search",
+ explain:`<p>A <strong>B-Tree</strong> is a balanced search tree in which a node can contain multiple keys and multiple children. It is designed to remain relatively <strong>short and wide</strong>.</p><p>For large stored datasets, a shallow tree can reduce the number of storage levels that must be accessed during a search.</p>`,
+ syntax:`        [20 | 40]
+       /    |    \\
+   [5|10] [25|30] [50|60]`,
+ code:`// Search for 35:
+//
+//          [20 | 40]
+//         /    |    \\
+//      [5|10] [25|30] [50|60]
+//
+// 35 > 20 and 35 < 40
+// follow the middle child.`,
+ points:["A node can contain multiple sorted keys.","A node can have multiple children.","The tree remains balanced.","Search compares keys and chooses the appropriate child."],
+ pitfall:"A B-Tree is not simply a binary tree with another name; its nodes can contain several keys and children.",
+ quiz:{q:"Why are B-Trees useful for large stored datasets?",opts:["They always have one node","They keep the tree shallow","They never compare keys","They store every key at its own array index"],answer:1,explain:"Multiple keys per node help keep the tree shallow."}
+},
+{
+ unit:5,num:"5.7",id:"btreeops",title:"B-Tree Insertion, Deletion & Applications",
+ explain:`<p>During <strong>insertion</strong>, a new key goes into its appropriate leaf. If a node becomes too full, it is <strong>split</strong> and a middle key is promoted to the parent.</p><p>During <strong>deletion</strong>, a node can become too small. The tree may restore its rules by <strong>borrowing</strong> from a sibling or <strong>merging</strong> nodes. B-Trees are useful in database and file-system indexing because their shallow structure can reduce storage accesses.</p>`,
+ syntax:`Too full:
+[10 | 20 | 30]
+      ↓ split
+      [20]
+     /    \\
+  [10]   [30]
+
+Too few:
+borrow OR merge`,
+ code:`// Simplified split:
+//
+// Before:
+// [10 | 20 | 30]
+//
+// 20 moves upward.
+//
+// Parent receives 20
+// Left child  -> [10]
+// Right child -> [30]`,
+ points:["Insertion overflow → split the node.","A middle key is promoted to the parent.","Deletion underflow → borrow or merge.","B-Trees are useful for large stored and indexed datasets."],
+ pitfall:"The exact key capacity depends on the order of the B-Tree. Do not assume every B-Tree has the same node capacity.",
+ quiz:{q:"A B-Tree node becomes too full during insertion. What is the key operation?",opts:["Split the node","Delete the entire tree","Turn it into a stack","Use direct addressing"],answer:0,explain:"A full node is split and a middle key is promoted so the tree remains balanced."}
+}
+];
+TOPICS.push(...EXTRA_TOPICS);
 /* ============================= RENDER ============================= */
 function escapeHtml(str){
   return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -1134,10 +1570,10 @@ function updateNavItem(id){
 function buildNav(){
   const container = document.getElementById('navContainer');
   container.innerHTML = '';
-  [1,4].forEach(unitNum => {
+  [1,3,4,5].forEach(unitNum => {
     const groupTitle = document.createElement('div');
     groupTitle.className = 'nav-group-title';
-    groupTitle.textContent = unitNum === 1 ? 'Unit I' : 'Unit IV';
+    groupTitle.textContent = 'Unit ' + (unitNum === 1 ? 'I' : unitNum === 3 ? 'III' : unitNum === 4 ? 'IV' : 'V');
     container.appendChild(groupTitle);
     const ul = document.createElement('ul');
     ul.className = 'nav-list';
@@ -1161,9 +1597,13 @@ function buildNav(){
 
 function renderAll(){
   const u1 = document.getElementById('unit1Content');
+  const u3 = document.getElementById('unit3Content');
   const u4 = document.getElementById('unit4Content');
+  const u5 = document.getElementById('unit5Content');
   TOPICS.filter(t => t.unit === 1).forEach(t => u1.appendChild(buildTopicCard(t)));
+  TOPICS.filter(t => t.unit === 3).forEach(t => u3.appendChild(buildTopicCard(t)));
   TOPICS.filter(t => t.unit === 4).forEach(t => u4.appendChild(buildTopicCard(t)));
+  TOPICS.filter(t => t.unit === 5).forEach(t => u5.appendChild(buildTopicCard(t)));
   buildNav();
   updateProgress();
 }
@@ -1171,15 +1611,11 @@ function renderAll(){
 renderAll();
 
 /* ---- Unit tab switching (scrolls to banner) ---- */
-document.getElementById('tabUnit1').addEventListener('click', () => {
-  document.getElementById('tabUnit1').classList.add('active');
-  document.getElementById('tabUnit4').classList.remove('active');
-  document.getElementById('banner1').scrollIntoView({behavior:'smooth'});
-});
-document.getElementById('tabUnit4').addEventListener('click', () => {
-  document.getElementById('tabUnit4').classList.add('active');
-  document.getElementById('tabUnit1').classList.remove('active');
-  document.getElementById('banner4').scrollIntoView({behavior:'smooth'});
+[1,3,4,5].forEach(unitNum => {
+  document.getElementById('tabUnit'+unitNum).addEventListener('click', () => {
+    [1,3,4,5].forEach(n => document.getElementById('tabUnit'+n).classList.toggle('active', n === unitNum));
+    document.getElementById('banner'+unitNum).scrollIntoView({behavior:'smooth'});
+  });
 });
 
 /* ---- Search filter (sidebar + main content) ---- */
@@ -1198,7 +1634,8 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
     card.classList.toggle('hidden', !match);
   });
   document.querySelectorAll('.nav-group-title').forEach(gt => {
-    const unitNum = gt.textContent.includes('IV') ? 4 : 1;
+    const unitMap = {'Unit I':1,'Unit III':3,'Unit IV':4,'Unit V':5};
+    const unitNum = unitMap[gt.textContent.trim()];
     const anyInGroup = [...document.querySelectorAll('.nav-item[data-id]')]
       .filter(i => TOPICS.find(t => t.id === i.dataset.id && t.unit === unitNum))
       .some(i => !i.classList.contains('hidden'));
@@ -1221,8 +1658,9 @@ const observer = new IntersectionObserver((entries) => {
       const navItem = document.querySelector('.nav-item[data-id="'+entry.target.id+'"]');
       if (navItem) navItem.classList.add('current');
       const unit = entry.target.dataset.unit;
-      document.getElementById('tabUnit1').classList.toggle('active', unit === '1');
-      document.getElementById('tabUnit4').classList.toggle('active', unit === '4');
+      [1,3,4,5].forEach(n => {
+        document.getElementById('tabUnit'+n).classList.toggle('active', unit === String(n));
+      });
     }
   });
 }, { rootMargin: '-20% 0px -70% 0px' });
@@ -1243,6 +1681,23 @@ document.querySelectorAll('.topic-card').forEach(c => observer.observe(c));
       hideTimer = setTimeout(() => reveal.classList.remove('show'), 4000);
       taps = 0;
     }
+  });
+})();
+
+
+/* ---- Transparent Back-to-Top Rocket ---- */
+(function(){
+  const rocket = document.getElementById('rocketTop');
+  if (!rocket) return;
+  const updateRocket = () => rocket.classList.toggle('visible', window.scrollY > 450);
+  window.addEventListener('scroll', updateRocket, {passive:true});
+  updateRocket();
+  rocket.addEventListener('click', () => {
+    rocket.classList.remove('launching');
+    void rocket.offsetWidth;
+    rocket.classList.add('launching');
+    window.scrollTo({top:0, behavior:'smooth'});
+    setTimeout(() => rocket.classList.remove('launching'), 900);
   });
 })();
 
